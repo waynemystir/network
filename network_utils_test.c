@@ -77,5 +77,5 @@ int main() {
 		hns2++;
 	}
 
-	return 0;
+	return ret;
 }
