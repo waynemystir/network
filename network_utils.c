@@ -19,13 +19,13 @@ int gethostname(const char *ip_str,
 
 	struct sockaddr_in sai;
 	sai.sin_family = AF_INET;
-	sai.sin_port = htons(port);
+	if (port > 0) sai.sin_port = htons(port);
 	int ret = inet_pton(AF_INET, ip_str, &(sai.sin_addr));
 
 	if (ret != 1) {
 		struct sockaddr_in6 sai6;
 		sai6.sin6_family = AF_INET6;
-		sai6.sin6_port = htons(port);
+		if (port > 0) sai6.sin6_port = htons(port);
 		ret = inet_pton(AF_INET6, ip_str, &(sai6.sin6_addr));
 
 		if (ret != 1) {
