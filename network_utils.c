@@ -5,13 +5,53 @@
 
 #include "network_utils.h"
 
+int gethostname(const char *ip_str,
+					char hostname[256]) {
+
+	if (!ip_str) {
+		fprintf(stderr, "gethostname: ip_str argument is null\n");
+		return -1;
+	}
+
+	struct sockaddr *sa;
+
+	struct sockaddr_in sai;
+	sai.sin_family = AF_INET;
+	int ret = inet_pton(AF_INET, ip_str, &(sai.sin_addr));
+
+	if (ret != 1) {
+		struct sockaddr_in6 sai6;
+		sai6.sin6_family = AF_INET6;
+		ret = inet_pton(AF_INET6, ip_str, &(sai6.sin6_addr));
+
+		if (ret != 1) {
+			fprintf(stderr, "inet_pton not working for either IPv4 or IPv6\n");
+			return -1;
+		} else {
+			sa = (struct sockaddr *) &sai6;
+		}
+	} else {
+		sa = (struct sockaddr *) &sai;
+	}
+
+	char service[20];
+	ret = getnameinfo(sa, sizeof sa, hostname, 256, service, sizeof service, 0);
+
+	if (ret != 0) {
+		fprintf(stderr, "getnameinfo::%d::%s\n", ret, gai_strerror(ret));
+		return -2;
+	}
+
+	return 0;
+}
+
 int get_addrinfos(const char *hostname,
 					struct addrinfo **addrinfos) {
 
 	struct addrinfo hints;
 
 	if (!hostname) {
-		fprintf(stderr, "hostname is null\n");
+		fprintf(stderr, "get_addrinfos: hostname argument is null\n");
 		return -1;
 	}
 

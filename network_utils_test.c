@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "network_utils.h"
 
-const char *hostname = NULL;
+char hostname[256];
 
 void iterate_ips_callback(struct addrinfop *aip) {
 	printf("%s::%s::%s\n", aip->ip_str, aip->ip_ver, aip->socktype);
@@ -31,12 +32,12 @@ int main() {
 
 	printf("\n");
 
-	hostname = "github.com";
+	strcpy(hostname, "github.com");
 	ret = get_addrinfos(hostname, &ai1);
 	printf("^^^^^^^^^^^^^^^^^^^^ %s ips ^^^^^^^^^^^^^^^^^^^^\n", hostname);
 	ret = iterate_addrinfos(ai1, NULL, iterate_ips_callback, iterate_complete);
 
-	hostname = "reddit.com";
+	strcpy(hostname, "reddit.com");
 	printf("^^^^^^^^^^^^^^^^^^^^ %s ips ^^^^^^^^^^^^^^^^^^^^\n", hostname);
 	ret = get_iterate_addr_infos(hostname, iterate_ips_callback, iterate_complete);
 
@@ -47,12 +48,12 @@ int main() {
 	const char **hns = hostnames;
 	while (*hns) {
 		printf("^^^^^^^^^^^^^^^^^^^^ %s ^^^^^^^^^^^^^^^^^^^^\n", *hns);
-		hostname = *hns;
+		strcpy(hostname, *hns);
 		get_iterate_addr_infos(*hns, iterate_ips_callback, iterate_complete);
 		hns++;
 	}
 
-	hostname = "facebook.com";
+	strcpy(hostname, "facebook.com");
 	get_addrinfops(hostname, &aip);
 	printf("^^^^^^^^^^^^^^^^^^^^ %s ^^^^^^^^^^^^^^^^^^^^\n", hostname);
 	while (aip) {
@@ -62,11 +63,11 @@ int main() {
 	iterate_complete();
 	free(aip);
 
-	const char *hostnames2[256] = {"stackoverflow.com", "gcc.gnu.org", "developer.apple.com"};
+	const char *hostnames2[256] = {"youtube.com", "stackoverflow.com", "gcc.gnu.org", "developer.apple.com"};
 	const char **hns2 = hostnames2;
 	while (*hns2) {
 		printf("^^^^^^^^^^^^^^^^^^^^ %s ^^^^^^^^^^^^^^^^^^^^\n", *hns2);
-		hostname = *hns2;
+		strcpy(hostname, *hns2);
 		get_addrinfops(*hns2, &aip);
 
 		while (aip) {
@@ -75,6 +76,18 @@ int main() {
 		}
 		iterate_complete();
 		hns2++;
+	}
+
+	strcpy(hostname, "");
+	puts("\nNow let's get hostnames from their IP address:\n");
+
+	const char *ips[256] = {"216.58.219.238", "172.217.4.78", "172.217.3.14",
+								"2607:f8b0:4006:80f::200e", "98.138.253.109", "2001:4998:c:a06::2:4008"};
+	const char **ip = ips;
+	while (*ip) {
+		gethostname(*ip, hostname);
+		printf("%s :: %s\n", *ip, hostname);
+		ip++;
 	}
 
 	return ret;
