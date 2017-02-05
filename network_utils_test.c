@@ -28,6 +28,7 @@ int main() {
 		printf("%s::%s\n", aip->ip_str, aip->ip_ver);
 		aip = aip->next;
 	}
+	free(ai1);
 	free(aip);
 
 	printf("\n");
@@ -36,6 +37,7 @@ int main() {
 	ret = get_addrinfos(hostname, &ai1);
 	printf("^^^^^^^^^^^^^^^^^^^^ %s ips ^^^^^^^^^^^^^^^^^^^^\n", hostname);
 	ret = iterate_addrinfos(ai1, NULL, iterate_ips_callback, iterate_complete);
+	free(ai1);
 
 	strcpy(hostname, "reddit.com");
 	printf("^^^^^^^^^^^^^^^^^^^^ %s ips ^^^^^^^^^^^^^^^^^^^^\n", hostname);
@@ -77,12 +79,13 @@ int main() {
 		iterate_complete();
 		hns2++;
 	}
+	free(aip);
 
 	strcpy(hostname, "");
 	puts("\nNow let's get hostnames from their IP address:\n");
 
-	const char *ips[256] = {"216.58.219.238", "172.217.4.78", "172.217.3.14",
-								"2607:f8b0:4006:80f::200e", "98.138.253.109", "2001:4998:c:a06::2:4008"};
+	const char *ips[256] = {"216.58.219.238", "172.217.4.78", "172.217.3.14", "2607:f8b0:4006:80f::200e",
+								"52.33.196.199", "98.138.253.109", "2001:4998:c:a06::2:4008"};
 	const char **ip = ips;
 	while (*ip) {
 		gethostname(*ip, hostname);
