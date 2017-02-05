@@ -16,7 +16,9 @@ typedef struct addrinfop {
 } addrinfop;
 
 int gethostname(const char *ip_str,
-					char hostname[256]);
+					int port,
+					char hostname[NI_MAXHOST],
+					char service[NI_MAXSERV]);
 
 int get_addrinfos(const char *hostname,
 					struct addrinfo **addrinfos);

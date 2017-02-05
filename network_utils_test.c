@@ -4,7 +4,7 @@
 
 #include "network_utils.h"
 
-char hostname[256];
+char hostname[NI_MAXHOST];
 
 void iterate_ips_callback(struct addrinfop *aip) {
 	printf("%s::%s::%s\n", aip->ip_str, aip->ip_ver, aip->socktype);
@@ -84,12 +84,13 @@ int main() {
 	strcpy(hostname, "");
 	puts("\nNow let's get hostnames from their IP address:\n");
 
+	char service[NI_MAXSERV];
 	const char *ips[256] = {"216.58.219.238", "172.217.4.78", "172.217.3.14", "2607:f8b0:4006:80f::200e",
 								"52.33.196.199", "98.138.253.109", "2001:4998:c:a06::2:4008"};
 	const char **ip = ips;
 	while (*ip) {
-		gethostname(*ip, hostname);
-		printf("%s :: %s\n", *ip, hostname);
+		gethostname(*ip, 8080, hostname, service);
+		printf("%s :: %s :: %s\n", *ip, hostname, service);
 		ip++;
 	}
 
