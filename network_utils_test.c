@@ -44,8 +44,8 @@ int main() {
 	ret = get_iterate_addr_infos(hostname, iterate_ips_callback, iterate_complete);
 
 	const char *hostnames[256] = { "ycombinator.com.com",
-									"yahoo.com",
-									"thenextweb.com/",
+					"yahoo.com",
+					"thenextweb.com/",
 									NULL };
 	const char **hns = hostnames;
 	while (*hns) {
@@ -65,7 +65,8 @@ int main() {
 	iterate_complete();
 	free(aip);
 
-	const char *hostnames2[256] = {"youtube.com", "stackoverflow.com", "gcc.gnu.org", "developer.apple.com"};
+	const char *hostnames2[256] = {"youtube.com", "stackoverflow.com",
+					"gcc.gnu.org", "developer.apple.com"};
 	const char **hns2 = hostnames2;
 	while (*hns2) {
 		printf("^^^^^^^^^^^^^^^^^^^^ %s ^^^^^^^^^^^^^^^^^^^^\n", *hns2);
@@ -85,8 +86,10 @@ int main() {
 	puts("\nNow let's get hostnames from their IP address:\n");
 
 	char service[NI_MAXSERV];
-	const char *ips[256] = {"216.58.219.238", "172.217.4.78", "172.217.3.14", "2607:f8b0:4006:80f::200e",
-								"52.33.196.199", "98.138.253.109", "2001:4998:c:a06::2:4008"};
+	const char *ips[256] = {"216.58.219.238", "172.217.4.78", "172.217.3.14",
+				"2607:f8b0:4006:80f::200e", "52.33.196.199",
+				"98.138.253.109", "2001:4998:c:a06::2:4008",
+				"31.13.71.36"};
 	const char **ip = ips;
 	while (*ip) {
 		gethostname(*ip, 8080, hostname, service);

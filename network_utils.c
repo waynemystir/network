@@ -6,9 +6,9 @@
 #include "network_utils.h"
 
 int gethostname(const char *ip_str,
-					int port,
-					char hostname[NI_MAXHOST],
-					char service[NI_MAXSERV]) {
+		int port,
+		char hostname[NI_MAXHOST],
+		char service[NI_MAXSERV]) {
 
 	if (!ip_str) {
 		fprintf(stderr, "gethostname: ip_str argument is null\n");
@@ -52,7 +52,7 @@ int gethostname(const char *ip_str,
 }
 
 int get_addrinfos(const char *hostname,
-					struct addrinfo **addrinfos) {
+			struct addrinfo **addrinfos) {
 
 	struct addrinfo hints;
 
@@ -75,7 +75,7 @@ int get_addrinfos(const char *hostname,
 }
 
 int addrinfo_to_p(struct addrinfo *ai,
-					struct addrinfop *aip) {
+			struct addrinfop *aip) {
 	if (!ai || !aip) {
 		return 0;
 	}
@@ -104,9 +104,9 @@ int addrinfo_to_p(struct addrinfo *ai,
 }
 
 int iterate_addrinfos(struct addrinfo *addrinfos,
-						struct addrinfop **addrinfops,
-						void (*iterate_callback)(struct addrinfop *aip),
-						void (*iterate_complete)(void)) {
+			struct addrinfop **addrinfops,
+			void (*iterate_callback)(struct addrinfop *aip),
+			void (*iterate_complete)(void)) {
 	struct addrinfo *ai;
 	ai = addrinfos;
 	addrinfop *aip;
@@ -131,8 +131,8 @@ int iterate_addrinfos(struct addrinfo *addrinfos,
 }
 
 int get_iterate_addr_infos(const char *hostname,
-							void (*iterate_callback)(struct addrinfop *aip),
-							void (*iterate_complete)(void)) {
+				void (*iterate_callback)(struct addrinfop *aip),
+				void (*iterate_complete)(void)) {
 
 	struct addrinfo *ai;
 	int ret = get_and_iterate_addr_infos(hostname, &ai, NULL, iterate_callback, iterate_complete);
@@ -141,10 +141,10 @@ int get_iterate_addr_infos(const char *hostname,
 }
 
 int get_and_iterate_addr_infos(const char *hostname,
-								struct addrinfo **addrinfos,
-								struct addrinfop **addrinfops,
-								void (*iterate_callback)(struct addrinfop *aip),
-								void (*iterate_complete)(void)) {
+				struct addrinfo **addrinfos,
+				struct addrinfop **addrinfops,
+				void (*iterate_callback)(struct addrinfop *aip),
+				void (*iterate_complete)(void)) {
 
 	int ret = get_addrinfos(hostname, addrinfos);
 	if (ret < 0) { return ret; }
@@ -152,7 +152,7 @@ int get_and_iterate_addr_infos(const char *hostname,
 }
 
 int get_addrinfops(const char*hostname,
-						struct addrinfop **addrinfops) {
+				struct addrinfop **addrinfops) {
 	struct addrinfo *ai;
 	int ret = get_and_iterate_addr_infos(hostname, &ai, addrinfops, NULL, NULL);
 	if (!ret) freeaddrinfo(ai);

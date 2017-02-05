@@ -16,30 +16,30 @@ typedef struct addrinfop {
 } addrinfop;
 
 int gethostname(const char *ip_str,
-					int port,
-					char hostname[NI_MAXHOST],
-					char service[NI_MAXSERV]);
+		int port,
+		char hostname[NI_MAXHOST],
+		char service[NI_MAXSERV]);
 
 int get_addrinfos(const char *hostname,
-					struct addrinfo **addrinfos);
+			struct addrinfo **addrinfos);
 
 int addrinfo_to_p(struct addrinfo *ai,
-					struct addrinfop *aip);
+			struct addrinfop *aip);
 
 int iterate_addrinfos(struct addrinfo *addrinfos,
-						struct addrinfop **addrinfops,
-						void (*iterate_callback)(struct addrinfop *aip),
-						void (*iterate_complete)(void));
+			struct addrinfop **addrinfops,
+			void (*iterate_callback)(struct addrinfop *aip),
+			void (*iterate_complete)(void));
 
 int get_iterate_addr_infos(const char *hostname,
-							void (*iterate_callback)(struct addrinfop *aip),
-							void (*iterate_complete)(void));
+				void (*iterate_callback)(struct addrinfop *aip),
+				void (*iterate_complete)(void));
 
 int get_and_iterate_addr_infos(const char *hostname,
-								struct addrinfo **addrinfos,
-								struct addrinfop **addrinfops,
-								void (*iterate_callback)(struct addrinfop *aip),
-								void (*iterate_complete)(void));
+				struct addrinfo **addrinfos,
+				struct addrinfop **addrinfops,
+				void (*iterate_callback)(struct addrinfop *aip),
+				void (*iterate_complete)(void));
 
 int get_addrinfops(const char*hostname,
-						struct addrinfop **addrinfops);
+			struct addrinfop **addrinfops);
