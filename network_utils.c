@@ -16,6 +16,7 @@ int gethostname(const char *ip_str,
 	}
 
 	struct sockaddr *sa;
+	size_t sa_size;
 
 	struct sockaddr_in sai;
 	sai.sin_family = AF_INET;
@@ -31,10 +32,16 @@ int gethostname(const char *ip_str,
 		if (ret != 1) {
 			fprintf(stderr, "inet_pton not working for either IPv4 or IPv6\n");
 			return -1;
-		} else sa = (struct sockaddr *) &sai6;
-	} else sa = (struct sockaddr *) &sai;
+		} else {
+			sa_size = sizeof sai6;
+			sa = (struct sockaddr *) &sai6;
+		}
+	} else {
+		sa_size = sizeof sai;
+		sa = (struct sockaddr *) &sai;
+	}
 
-	ret = getnameinfo(sa, sizeof sa, hostname, NI_MAXHOST, service, NI_MAXSERV, 0);
+	ret = getnameinfo(sa, sa_size, hostname, NI_MAXHOST, service, NI_MAXSERV, 0);
 
 	if (ret != 0) {
 		fprintf(stderr, "getnameinfo::%d::%s\n", ret, gai_strerror(ret));
