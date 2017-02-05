@@ -129,7 +129,7 @@ int get_iterate_addr_infos(const char *hostname,
 
 	struct addrinfo *ai;
 	int ret = get_and_iterate_addr_infos(hostname, &ai, NULL, iterate_callback, iterate_complete);
-	free(ai);
+	if (!ret) free(ai);
 	return ret;
 }
 
@@ -148,6 +148,6 @@ int get_addrinfops(const char*hostname,
 						struct addrinfop **addrinfops) {
 	struct addrinfo *ai;
 	int ret = get_and_iterate_addr_infos(hostname, &ai, addrinfops, NULL, NULL);
-	free(ai);
+	if (!ret) free(ai);
 	return ret;
 }
