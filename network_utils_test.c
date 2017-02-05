@@ -28,7 +28,7 @@ int main() {
 		printf("%s::%s\n", aip->ip_str, aip->ip_ver);
 		aip = aip->next;
 	}
-	free(ai1);
+	freeaddrinfo(ai1);
 	free(aip);
 
 	printf("\n");
@@ -37,7 +37,7 @@ int main() {
 	ret = get_addrinfos(hostname, &ai1);
 	printf("^^^^^^^^^^^^^^^^^^^^ %s ips ^^^^^^^^^^^^^^^^^^^^\n", hostname);
 	ret = iterate_addrinfos(ai1, NULL, iterate_ips_callback, iterate_complete);
-	free(ai1);
+	freeaddrinfo(ai1);
 
 	strcpy(hostname, "reddit.com");
 	printf("^^^^^^^^^^^^^^^^^^^^ %s ips ^^^^^^^^^^^^^^^^^^^^\n", hostname);
