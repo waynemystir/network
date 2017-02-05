@@ -147,7 +147,10 @@ int get_and_iterate_addr_infos(const char *hostname,
 				void (*iterate_complete)(void)) {
 
 	int ret = get_addrinfos(hostname, addrinfos);
-	if (ret < 0) { return ret; }
+	if (ret < 0) {
+		if (iterate_complete) iterate_complete();
+		return ret;
+	}
 	return iterate_addrinfos(*addrinfos, addrinfops, iterate_callback, iterate_complete);
 }
 
