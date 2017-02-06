@@ -29,7 +29,7 @@ int main() {
 		aip = aip->next;
 	}
 	freeaddrinfo(ai1);
-	free(aip);
+	freeaddrinfo_p(aip);
 
 	printf("\n");
 
@@ -63,7 +63,7 @@ int main() {
 		aip = aip->next;
 	}
 	iterate_complete();
-	free(aip);
+	freeaddrinfo_p(aip);
 
 	const char *hostnames2[256] = {"youtube.com", "stackoverflow.com",
 					"gcc.gnu.org", "developer.apple.com"};
@@ -80,7 +80,7 @@ int main() {
 		iterate_complete();
 		hns2++;
 	}
-	free(aip);
+	freeaddrinfo_p(aip);
 
 	strcpy(hostname, "");
 	puts("\nNow let's get hostnames from their IP address:\n");

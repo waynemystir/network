@@ -155,9 +155,21 @@ int get_and_iterate_addr_infos(const char *hostname,
 }
 
 int get_addrinfops(const char*hostname,
-				struct addrinfop **addrinfops) {
+			struct addrinfop **addrinfops) {
 	struct addrinfo *ai;
 	int ret = get_and_iterate_addr_infos(hostname, &ai, addrinfops, NULL, NULL);
 	if (!ret) freeaddrinfo(ai);
 	return ret;
+}
+
+void freeaddrinfo_p(struct addrinfop *addrinfop) {
+	if (!addrinfop) {
+		return;
+	}
+
+	if (addrinfop->next) freeaddrinfo_p(addrinfop->next);
+	if (addrinfop->hostname) free((char*)addrinfop->hostname);
+	if (addrinfop->ip_str) free((char*)addrinfop->ip_str);
+	if (addrinfop->ip_ver) free((char*)addrinfop->ip_ver);
+	if (addrinfop->socktype) free((char*)addrinfop->socktype);
 }

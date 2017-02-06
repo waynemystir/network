@@ -43,3 +43,5 @@ int get_and_iterate_addr_infos(const char *hostname,
 
 int get_addrinfops(const char*hostname,
 			struct addrinfop **addrinfops);
+
+void freeaddrinfo_p(struct addrinfop *addrinfops);
