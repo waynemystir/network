@@ -5,6 +5,88 @@
 
 #include "network_utils.h"
 
+int str_to_addr(struct sockaddr **addr,
+		const char *addr_str,
+		const char *service,
+		int family,
+		int socktype,
+		int flags ) {
+	if (!addr) {
+		printf("A NULL sockaddr** was given to str_to_addr\n");
+		return -1;
+	}
+	struct addrinfo hints, *info = NULL;
+
+	memset( &hints, '\0', sizeof(struct addrinfo) );
+	hints.ai_family = family;
+	hints.ai_socktype = socktype;
+	hints.ai_flags = flags;
+
+	int status = getaddrinfo( addr_str, service, &hints, &info );
+	if ( status != 0 ) {
+		fprintf(stderr, "getaddrinfo: %s addr_str: %s service: %s\n", gai_strerror(status), addr_str, service);
+		return -1;
+	}
+
+	if ( info ) {
+		size_t st = info->ai_family == AF_INET6 ? sizeof(struct sockaddr_in6) : sizeof(struct sockaddr_in);
+		*addr = malloc(st);
+		memcpy( *addr, info->ai_addr, st );
+		freeaddrinfo( info );
+	}
+
+	return 0;
+}
+
+int addr_to_str(struct sockaddr *addr,
+		char *addrbuf,
+		char *portbuf,
+		char *familybuf) {
+
+	char buf[INET6_ADDRSTRLEN+1];
+	socklen_t sl = sizeof(buf);
+	unsigned short port;
+
+	switch(addr->sa_family) {
+		case AF_INET6:
+			inet_ntop( AF_INET6, &((struct sockaddr_in6 *)addr)->sin6_addr, buf, sl );
+			port = ntohs( ((struct sockaddr_in6 *)addr)->sin6_port );
+			sprintf( familybuf, "IP6" );
+			break;
+		case AF_INET:
+			inet_ntop( AF_INET, &((struct sockaddr_in *)addr)->sin_addr, buf, sl );
+			port = ntohs( ((struct sockaddr_in *)addr)->sin_port );
+			sprintf( familybuf, "IP4" );
+			break;
+		case AF_UNSPEC:
+		default:
+			sprintf( buf, "<invalid address>" );
+			port = -1;
+			sprintf( familybuf, "UNS" );
+	}
+	sprintf( addrbuf, "%s", buf );
+	sprintf( portbuf, "%d", port );
+	return 0;
+}
+
+int str_addr_str(const char *addr_str,
+			const char *service,
+			int family,
+			int socktype,
+			int flags,
+			char *ip_str,
+			char *port_str,
+			char *family_str) {
+
+	struct sockaddr *sa1;
+	int ret = str_to_addr(&sa1, addr_str, service, family, socktype, flags);
+	if (!ret) {
+		addr_to_str(sa1, ip_str, port_str, family_str);
+		free(sa1);
+	}
+	return ret;
+}
+
 int gethostname(const char *ip_str,
 		int port,
 		char hostname[NI_MAXHOST],

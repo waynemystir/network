@@ -15,6 +15,27 @@ typedef struct addrinfop {
 	struct addrinfop *next;
 } addrinfop;
 
+int str_to_addr(struct sockaddr **addr,
+		const char *addr_str,
+		const char *service,
+		int family,
+		int socktype,
+		int flags);
+
+int addr_to_str(struct sockaddr *addr,
+		char *addrbuf,
+		char *portbuf,
+		char *familybuf);
+
+int str_addr_str(const char *addr_str,
+			const char *service,
+			int family,
+			int socktype,
+			int flags,
+			char *ip_str,
+			char *port_str,
+			char *family_str);
+
 int gethostname(const char *ip_str,
 		int port,
 		char hostname[NI_MAXHOST],

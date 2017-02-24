@@ -97,5 +97,37 @@ int main() {
 		ip++;
 	}
 
+	struct sockaddr *sa1;
+	char w0[] = "localhost";
+	char w1[256];
+	char w2[256];
+	char w3[256];
+
+	ret = str_to_addr(&sa1, w0, "http", AF_INET, SOCK_DGRAM, 0);
+	if (!ret) {
+		addr_to_str(sa1, w1, w2, w3);
+		printf("main 1 %s %s %s %s\n", w0, w1, w2, w3);
+		free(sa1);
+	}
+	ret = str_to_addr(&sa1, w0, "http", AF_INET6, SOCK_STREAM, 0);
+	if (!ret) {
+		addr_to_str(sa1, w1, w2, w3);
+		printf("main 2 %s %s %s %s\n", w0, w1, w2, w3);
+		free(sa1);
+	}
+
+	str_addr_str("google.com", "http", AF_INET, SOCK_DGRAM, 0, w1, w2, w3);
+	printf("main 3 google.com %s %s %s\n", w1, w2, w3);
+	str_addr_str("google.com", "http", AF_INET6, SOCK_DGRAM, 0, w1, w2, w3);
+	printf("main 4 google.com %s %s %s\n", w1, w2, w3);
+	str_addr_str("reddit.com", "http", AF_INET, SOCK_DGRAM, 0, w1, w2, w3);
+	printf("main 5 reddit.com %s %s %s\n", w1, w2, w3);
+	str_addr_str("reddit.com", "http", AF_INET6, SOCK_STREAM, 0, w1, w2, w3);
+	printf("main 6 reddit.com %s %s %s\n", w1, w2, w3);
+	str_addr_str("facebook.com", "http", AF_INET, SOCK_DGRAM, 0, w1, w2, w3);
+	printf("main 7 facebook.com %s %s %s\n", w1, w2, w3);
+	str_addr_str("facebook.com", "http", AF_INET6, SOCK_DGRAM, 0, w1, w2, w3);
+	printf("main 8 facebook.com %s %s %s\n", w1, w2, w3);
+
 	return ret;
 }
