@@ -249,11 +249,7 @@ int get_addrinfops(const char*hostname,
 }
 
 void freeaddrinfo_p(struct addrinfop *addrinfop) {
-	if (!addrinfop) {
-		return;
-	}
-
+	if (!addrinfop) return;
 	if (addrinfop->next) freeaddrinfo_p(addrinfop->next);
-	// if (addrinfop->socktype) free((char*)addrinfop->socktype);
 	free(addrinfop);
 }

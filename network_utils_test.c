@@ -31,7 +31,6 @@ int main() {
 	}
 	freeaddrinfo(ai1);
 	freeaddrinfo_p(aip);
-	// freeaddrinfo_p(aip_iterate);
 
 	printf("\n");
 
@@ -67,7 +66,6 @@ int main() {
 	}
 	iterate_complete();
 	freeaddrinfo_p(aip);
-	// freeaddrinfo_p(aip_iterate);
 
 	const char *hostnames2[256] = {"youtube.com", "stackoverflow.com",
 					"gcc.gnu.org", "developer.apple.com"};
