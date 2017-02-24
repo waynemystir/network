@@ -8,10 +8,9 @@
 #define SOCK_RAW_STR "SOCK_RAW"               /* raw-protocol interface */
 
 typedef struct addrinfop {
-	const char *hostname;
-	const char *ip_str;
-	const char *ip_ver;
-	const char *socktype;
+	char ip_str[256];
+	char ip_ver[256];
+	char socktype[11];
 	struct addrinfop *next;
 } addrinfop;
 

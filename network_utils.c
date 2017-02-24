@@ -177,10 +177,11 @@ int addrinfo_to_p(struct addrinfo *ai,
 	}
 
 	inet_ntop(ai->ai_family, addr, ip_str, sizeof(ip_str));
-	aip->ip_str = strdup(ip_str);
-	aip->ip_ver = ip_ver;
-	aip->socktype = (ai->ai_socktype = SOCK_STREAM) ? SOCK_STREAM_STR :
-					(ai->ai_socktype = SOCK_DGRAM) ? SOCK_DGRAM_STR : "SOCK_UNKNOWN";
+	strcpy(aip->ip_str, ip_str);
+	strcpy(aip->ip_ver, ip_ver);
+	// char st[11];
+	strcpy(aip->socktype, (ai->ai_socktype = SOCK_STREAM) ? SOCK_STREAM_STR :
+					(ai->ai_socktype = SOCK_DGRAM) ? SOCK_DGRAM_STR : "SOCK_UNKNOWN");
 
 	return 0;
 }
@@ -253,9 +254,6 @@ void freeaddrinfo_p(struct addrinfop *addrinfop) {
 	}
 
 	if (addrinfop->next) freeaddrinfo_p(addrinfop->next);
-	if (addrinfop->hostname) free((char*)addrinfop->hostname);
-	if (addrinfop->ip_str) free((char*)addrinfop->ip_str);
-	// if (addrinfop->ip_ver) free((char*)addrinfop->ip_ver);
 	// if (addrinfop->socktype) free((char*)addrinfop->socktype);
 	free(addrinfop);
 }
