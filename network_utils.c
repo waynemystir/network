@@ -29,9 +29,8 @@ int str_to_addr(struct sockaddr **addr,
 	}
 
 	if ( info ) {
-		size_t st = info->ai_family == AF_INET6 ? sizeof(struct sockaddr_in6) : sizeof(struct sockaddr_in);
-		*addr = malloc(st);
-		memcpy( *addr, info->ai_addr, st );
+		*addr = malloc(info->ai_addrlen);
+		memcpy( *addr, info->ai_addr, info->ai_addrlen );
 		freeaddrinfo( info );
 	}
 
@@ -179,7 +178,6 @@ int addrinfo_to_p(struct addrinfo *ai,
 	inet_ntop(ai->ai_family, addr, ip_str, sizeof(ip_str));
 	strcpy(aip->ip_str, ip_str);
 	strcpy(aip->ip_ver, ip_ver);
-	// char st[11];
 	strcpy(aip->socktype, (ai->ai_socktype = SOCK_STREAM) ? SOCK_STREAM_STR :
 					(ai->ai_socktype = SOCK_DGRAM) ? SOCK_DGRAM_STR : "SOCK_UNKNOWN");
 

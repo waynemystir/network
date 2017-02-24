@@ -100,6 +100,8 @@ int main() {
 		ip++;
 	}
 
+	printf("\n\n^^^^^^^^^^^ Check str_to_addr and addr_to_str ^^^^^^^^^^^\n");
+
 	struct sockaddr *sa1;
 	char w0[] = "localhost";
 	char w1[256];
