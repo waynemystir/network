@@ -193,11 +193,13 @@ int iterate_addrinfos(struct addrinfo *addrinfos,
 	ai = addrinfos;
 	addrinfop *aip;
 	addrinfop *aip_prev = NULL;
+	addrinfop *aip_first_node;
 
 	while (ai) {
 		aip = malloc(sizeof(addrinfop));
 		if (aip_prev) aip_prev->next = aip;
 		else if (addrinfops) *addrinfops = aip;
+		else aip_first_node = aip;
 
 		addrinfo_to_p(ai, aip);
 		if (iterate_callback) iterate_callback(aip);
@@ -208,6 +210,7 @@ int iterate_addrinfos(struct addrinfo *addrinfos,
 
 	if (iterate_complete) iterate_complete();
 	aip->next = NULL;
+	if (!addrinfops) freeaddrinfo_p(aip_first_node);
 
 	return 0;
 }
@@ -252,6 +255,7 @@ void freeaddrinfo_p(struct addrinfop *addrinfop) {
 	if (addrinfop->next) freeaddrinfo_p(addrinfop->next);
 	if (addrinfop->hostname) free((char*)addrinfop->hostname);
 	if (addrinfop->ip_str) free((char*)addrinfop->ip_str);
-	if (addrinfop->ip_ver) free((char*)addrinfop->ip_ver);
-	if (addrinfop->socktype) free((char*)addrinfop->socktype);
+	// if (addrinfop->ip_ver) free((char*)addrinfop->ip_ver);
+	// if (addrinfop->socktype) free((char*)addrinfop->socktype);
+	free(addrinfop);
 }

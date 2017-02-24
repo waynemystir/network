@@ -23,13 +23,15 @@ int main() {
 
 	ret = get_addrinfos("google.com", &ai1);
 	ret = iterate_addrinfos(ai1, &aip, NULL, NULL);
+	struct addrinfop *aip_iterate = aip;
 	printf("^^^^^^^^^^^^^^^^^^^^ Google addrinfops ^^^^^^^^^^^^^^^^^^^^\n");
-	while (aip) {
-		printf("%s::%s\n", aip->ip_str, aip->ip_ver);
-		aip = aip->next;
+	while (aip_iterate) {
+		printf("%s::%s\n", aip_iterate->ip_str, aip_iterate->ip_ver);
+		aip_iterate = aip_iterate->next;
 	}
 	freeaddrinfo(ai1);
 	freeaddrinfo_p(aip);
+	// freeaddrinfo_p(aip_iterate);
 
 	printf("\n");
 
@@ -57,13 +59,15 @@ int main() {
 
 	strcpy(hostname, "facebook.com");
 	get_addrinfops(hostname, &aip);
+	aip_iterate = aip;
 	printf("^^^^^^^^^^^^^^^^^^^^ %s ^^^^^^^^^^^^^^^^^^^^\n", hostname);
-	while (aip) {
-		printf("%s::%s::%s\n", aip->ip_str, aip->ip_ver, aip->socktype);
-		aip = aip->next;
+	while (aip_iterate) {
+		printf("%s::%s::%s\n", aip_iterate->ip_str, aip_iterate->ip_ver, aip_iterate->socktype);
+		aip_iterate = aip_iterate->next;
 	}
 	iterate_complete();
 	freeaddrinfo_p(aip);
+	// freeaddrinfo_p(aip_iterate);
 
 	const char *hostnames2[256] = {"youtube.com", "stackoverflow.com",
 					"gcc.gnu.org", "developer.apple.com"};
@@ -72,15 +76,16 @@ int main() {
 		printf("^^^^^^^^^^^^^^^^^^^^ %s ^^^^^^^^^^^^^^^^^^^^\n", *hns2);
 		strcpy(hostname, *hns2);
 		get_addrinfops(*hns2, &aip);
+		aip_iterate = aip;
 
-		while (aip) {
-			printf("%s::%s::%s\n", aip->ip_str, aip->ip_ver, aip->socktype);
-			aip = aip->next;
+		while (aip_iterate) {
+			printf("%s::%s::%s\n", aip_iterate->ip_str, aip_iterate->ip_ver, aip_iterate->socktype);
+			aip_iterate = aip_iterate->next;
 		}
+		freeaddrinfo_p(aip);
 		iterate_complete();
 		hns2++;
 	}
-	freeaddrinfo_p(aip);
 
 	strcpy(hostname, "");
 	puts("\nNow let's get hostnames from their IP address:\n");
