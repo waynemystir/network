@@ -134,5 +134,15 @@ int main() {
 	str_addr_str("facebook.com", "http", AF_INET6, SOCK_DGRAM, 0, w1, w2, w3);
 	printf("main 8 facebook.com %s %s %s\n", w1, w2, w3);
 
+	strcpy(w0, "google.com");
+	ret = str_to_addr(&sa1, w0, "http", AF_INET6, SOCK_STREAM, 0);
+	if (!ret) {
+		unsigned short port;
+		unsigned short family;
+		addr_to_str_short(sa1, w1, &port, &family);
+		printf("addr_to_str_short %s %u %u\n", w1, port, family);
+		free(sa1);
+	}
+
 	return ret;
 }

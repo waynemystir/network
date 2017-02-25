@@ -26,6 +26,11 @@ int addr_to_str(struct sockaddr *addr,
 		char *portbuf,
 		char *familybuf);
 
+int addr_to_str_short(struct sockaddr *addr,
+		char *addrbuf,
+		unsigned short *port,
+		unsigned short *family);
+
 int str_addr_str(const char *addr_str,
 			const char *service,
 			int family,

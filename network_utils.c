@@ -72,6 +72,36 @@ int addr_to_str(struct sockaddr *addr,
 	return 0;
 }
 
+int addr_to_str_short(struct sockaddr *addr,
+		char *addrbuf,
+		unsigned short *port,
+		unsigned short *family) {
+
+	if (family) *family = addr->sa_family;
+	char buf[INET6_ADDRSTRLEN+1];
+	socklen_t sl = sizeof(buf);
+
+	switch(addr->sa_family) {
+		case AF_INET6:
+			inet_ntop( AF_INET6, &((struct sockaddr_in6 *)addr)->sin6_addr, buf, sl );
+			if (port) *port = ntohs( ((struct sockaddr_in6 *)addr)->sin6_port );
+			break;
+		case AF_INET:
+			inet_ntop( AF_INET, &((struct sockaddr_in *)addr)->sin_addr, buf, sl );
+			if (port) *port = ntohs( ((struct sockaddr_in *)addr)->sin_port );
+			break;
+		case AF_UNSPEC:
+			sprintf( buf, "<unspecified address> %d", addr->sa_family );
+			if (port) *port = -1;
+			break;
+		default:
+			sprintf( buf, "<invalid address> %d", addr->sa_family );
+			if (port) *port = -1;
+	}
+	sprintf( addrbuf, "%s", buf );
+	return 0;
+}
+
 int str_addr_str(const char *addr_str,
 			const char *service,
 			int family,
