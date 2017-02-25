@@ -10,7 +10,7 @@
 typedef struct addrinfop {
 	char ip_str[256];
 	char ip_ver[256];
-	char socktype[11];
+	char socktype[20];
 	struct addrinfop *next;
 } addrinfop;
 
