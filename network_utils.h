@@ -35,7 +35,7 @@ int str_addr_str(const char *addr_str,
 			char *port_str,
 			char *family_str);
 
-int gethostname(const char *ip_str,
+int get_hostname(const char *ip_str,
 		int port,
 		char hostname[NI_MAXHOST],
 		char service[NI_MAXSERV]);

@@ -86,13 +86,13 @@ int str_addr_str(const char *addr_str,
 	return ret;
 }
 
-int gethostname(const char *ip_str,
+int get_hostname(const char *ip_str,
 		int port,
 		char hostname[NI_MAXHOST],
 		char service[NI_MAXSERV]) {
 
 	if (!ip_str) {
-		fprintf(stderr, "gethostname: ip_str argument is null\n");
+		fprintf(stderr, "get_hostname: ip_str argument is null\n");
 		return -1;
 	}
 

@@ -95,7 +95,7 @@ int main() {
 				"31.13.71.36"};
 	const char **ip = ips;
 	while (*ip) {
-		gethostname(*ip, 8080, hostname, service);
+		get_hostname(*ip, 8080, hostname, service);
 		printf("%s :: %s :: %s\n", *ip, hostname, service);
 		ip++;
 	}
