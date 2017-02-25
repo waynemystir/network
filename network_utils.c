@@ -58,10 +58,14 @@ int addr_to_str(struct sockaddr *addr,
 			sprintf( familybuf, "IP4" );
 			break;
 		case AF_UNSPEC:
-		default:
-			sprintf( buf, "<invalid address>" );
+			sprintf( buf, "<unspecified address> %d", addr->sa_family );
 			port = -1;
 			sprintf( familybuf, "UNS" );
+			break;
+		default:
+			sprintf( buf, "<invalid address> %d", addr->sa_family );
+			port = -1;
+			sprintf( familybuf, "UKN" );
 	}
 	sprintf( addrbuf, "%s", buf );
 	sprintf( portbuf, "%d", port );
