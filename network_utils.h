@@ -40,6 +40,8 @@ int str_addr_str(const char *addr_str,
 			char *port_str,
 			char *family_str);
 
+int addr_cmp(const struct sockaddr *addr1, const struct sockaddr *addr2);
+
 int get_hostname(const char *ip_str,
 		int port,
 		char hostname[NI_MAXHOST],

@@ -120,6 +120,22 @@ int str_addr_str(const char *addr_str,
 	return ret;
 }
 
+int addr_cmp(const struct sockaddr *addr1, const struct sockaddr *addr2) {
+	if( addr1->sa_family != addr2->sa_family ) {
+		return 0;
+	} else if( addr1->sa_family == AF_INET ) {
+		const struct sockaddr_in *a1 = (struct sockaddr_in *)addr1;
+		const struct sockaddr_in *a2 = (struct sockaddr_in *)addr2;
+		return (memcmp( &a1->sin_addr, &a2->sin_addr, 4 ) == 0) && (a1->sin_port == a2->sin_port);
+	} else if( addr1->sa_family == AF_INET6 ) {
+		const struct sockaddr_in6 *a1 = (struct sockaddr_in6 *)addr1;
+		const struct sockaddr_in6 *a2 = (struct sockaddr_in6 *)addr2;
+		return (memcmp( &a1->sin6_addr, &a2->sin6_addr, 16 ) == 0) && (a1->sin6_port == a2->sin6_port);
+	} else {
+		return 0;
+	}
+}
+
 int get_hostname(const char *ip_str,
 		int port,
 		char hostname[NI_MAXHOST],
