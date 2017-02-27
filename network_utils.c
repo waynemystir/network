@@ -120,7 +120,7 @@ int str_addr_str(const char *addr_str,
 	return ret;
 }
 
-int addr_cmp(const struct sockaddr *addr1, const struct sockaddr *addr2) {
+int addr_equals(const struct sockaddr *addr1, const struct sockaddr *addr2) {
 	if( addr1->sa_family != addr2->sa_family ) {
 		return 0;
 	} else if( addr1->sa_family == AF_INET ) {

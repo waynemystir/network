@@ -1,3 +1,13 @@
+//
+//  network_utils.h
+//
+//  Created by WAYNE SMALL on 2/19/17.
+//  Copyright © 2017 Waynemystir. All rights reserved.
+//
+
+#ifndef network_utils_h
+#define network_utils_h
+
 #include <netdb.h>
 
 #define IPv4 "IPv4"
@@ -40,7 +50,7 @@ int str_addr_str(const char *addr_str,
 			char *port_str,
 			char *family_str);
 
-int addr_cmp(const struct sockaddr *addr1, const struct sockaddr *addr2);
+int addr_equals(const struct sockaddr *addr1, const struct sockaddr *addr2);
 
 int get_hostname(const char *ip_str,
 		int port,
@@ -72,3 +82,5 @@ int get_addrinfops(const char*hostname,
 			struct addrinfop **addrinfops);
 
 void freeaddrinfo_p(struct addrinfop *addrinfops);
+
+#endif /* udp_client_h */
