@@ -151,7 +151,7 @@ int get_hostname(const char *ip_str,
 	}
 
 	struct sockaddr *sa;
-	size_t sa_size;
+	socklen_t sa_size;
 
 	struct sockaddr_in sai;
 	sai.sin_family = AF_INET;
