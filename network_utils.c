@@ -244,9 +244,9 @@ int iterate_addrinfos(struct addrinfo *addrinfos,
 			void (*iterate_complete)(void)) {
 	struct addrinfo *ai;
 	ai = addrinfos;
-	addrinfop *aip;
+	addrinfop *aip = NULL;
 	addrinfop *aip_prev = NULL;
-	addrinfop *aip_first_node;
+	addrinfop *aip_first_node = NULL;
 
 	while (ai) {
 		aip = malloc(sizeof(addrinfop));
