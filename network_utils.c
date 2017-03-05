@@ -42,6 +42,8 @@ int addr_to_str(struct sockaddr *addr,
 		char *portbuf,
 		char *familybuf) {
 
+	if (!addr) return -1;
+
 	char buf[INET6_ADDRSTRLEN+1];
 	socklen_t sl = sizeof(buf);
 	unsigned short port;
@@ -76,6 +78,8 @@ int addr_to_str_short(struct sockaddr *addr,
 		char *addrbuf,
 		unsigned short *port,
 		unsigned short *family) {
+
+	if (!addr) return -1;
 
 	if (family) *family = addr->sa_family;
 	char buf[INET6_ADDRSTRLEN+1];
