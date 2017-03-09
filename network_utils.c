@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <arpa/inet.h>
+#include <ifaddrs.h>
 
 #include "network_utils.h"
 
@@ -122,6 +123,55 @@ int str_addr_str(const char *addr_str,
 		free(sa1);
 	}
 	return ret;
+}
+
+int get_if_addr(struct sockaddr **addr, size_t *size_addr, char ip_str[INET6_ADDRSTRLEN]) {
+	if (!addr || !size_addr) {
+		printf("A NULL sockaddr** or size_addr was given to str_to_addr\n");
+		return -1;
+	}
+
+	struct ifaddrs *iflist, *iface;
+
+	if (getifaddrs(&iflist) < 0) {
+		perror("getifaddrs");
+	}
+
+	char addrp[INET6_ADDRSTRLEN];
+
+	for (iface = iflist; iface; iface = iface->ifa_next) {
+		int af = iface->ifa_addr->sa_family;
+		switch (af) {
+			case AF_INET: {
+				*size_addr = sizeof(struct sockaddr_in);
+				break;
+			}
+			case AF_INET6: {
+				*size_addr = sizeof(struct sockaddr_in6);
+				break;
+			}
+			default:
+				continue;
+		}
+
+		struct sockaddr *potential_addr = iface->ifa_addr;
+
+		if (potential_addr) {
+			unsigned short port;
+			unsigned short family;
+			addr_to_str_short(potential_addr, addrp, &port, &family);
+
+			if (strcmp(addrp, "127.0.0.1") != 0) {
+				*addr = malloc(*size_addr);
+				memcpy(*addr, potential_addr, *size_addr);
+				strcpy(ip_str, addrp);
+				break;
+			} else *size_addr = 0;
+		} else *size_addr = 0;
+	}
+
+	freeifaddrs(iflist);
+	return 0;
 }
 
 int addr_equals(const struct sockaddr *addr1, const struct sockaddr *addr2) {

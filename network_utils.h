@@ -50,6 +50,10 @@ int str_addr_str(const char *addr_str,
 			char *port_str,
 			char *family_str);
 
+int get_if_addr(struct sockaddr **addr,
+		size_t *size_addr,
+		char ip_str[INET6_ADDRSTRLEN]);
+
 int addr_equals(const struct sockaddr *addr1, const struct sockaddr *addr2);
 
 int get_hostname(const char *ip_str,

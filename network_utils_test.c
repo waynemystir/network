@@ -144,5 +144,34 @@ int main() {
 		free(sa1);
 	}
 
+	printf("\n\n^^^^^^^^^^^ Check get_if_addr ^^^^^^^^^^^\n");
+
+	size_t size_sa1 = 0;
+	char ip_str[INET6_ADDRSTRLEN];
+	get_if_addr(&sa1, &size_sa1, ip_str);
+	printf("get_if_addr 1 %s %zu\n", ip_str, size_sa1);
+
+	int sock_fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+	if (sock_fd == -1) perror("socket");
+
+	int br = bind(sock_fd, sa1, size_sa1);
+	if (br == -1) perror("bind");
+
+	socklen_t len = sizeof(sa1);
+	int gsn = getsockname(sock_fd, sa1, &len);
+	if (gsn == -1) perror("getsockname");
+
+	char sa_str[INET6_ADDRSTRLEN];
+	unsigned short port;
+	unsigned short family;
+	addr_to_str_short(sa1, sa_str, &port, &family);
+	printf("get_if_addr 2 %s p1:%d p2:%d f:%d\n",
+		sa_str,
+		port,
+		ntohs(((struct sockaddr_in*)sa1)->sin_port),
+		family);
+
+	free(sa1);
+
 	return ret;
 }
