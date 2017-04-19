@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <arpa/inet.h>
 #include <ifaddrs.h>
+#include <net/if.h>
 
 #include "network_utils.h"
 
@@ -125,7 +126,92 @@ int str_addr_str(const char *addr_str,
 	return ret;
 }
 
-int get_if_addr(struct sockaddr **addr, size_t *size_addr, char ip_str[INET6_ADDRSTRLEN]) {
+int get_if_addr(IF_ADDR_PREFFERED iap,
+	struct sockaddr **ret_addr,
+	size_t *size_addr,
+	char ip_str[INET6_ADDRSTRLEN]) {
+	if (!ret_addr || !size_addr) {
+		printf("A NULL sockaddr** or size_addr was given to str_to_addr\n");
+		return -1;
+	}
+
+	char pref_net[20];
+	IF_ADDR_PREFFERED pref_family = 0;
+	switch (iap) {
+		case IPV4_WIFI: {
+			strcpy(pref_net, "en0");
+			pref_family = AF_INET;
+			break;
+		}
+		case IPV6_WIFI: {
+			strcpy(pref_net, "en0");
+			pref_family = AF_INET6;
+			break;
+		}
+		case IPV4_CELLULAR: {
+			strcpy(pref_net, "pdp_ip0");
+			pref_family = AF_INET;
+			break;
+		}
+		case IPV6_CELLULAR: {
+			strcpy(pref_net, "pdp_ip0");
+			pref_family = AF_INET6;
+			break;
+		}
+	}
+
+	// retrieve the current interfaces - returns 0 on success
+	struct ifaddrs *interfaces;
+	if (!getifaddrs(&interfaces)) {
+		// Loop through linked list of interfaces
+		struct ifaddrs *interface;
+		for (interface=interfaces; interface; interface=interface->ifa_next) {
+
+			if (!(interface->ifa_flags & IFF_UP) /* || (interface->ifa_flags & IFF_LOOPBACK) */ ) {
+				continue; // deeply nested code harder to read
+			}
+			const struct sockaddr *addr = (const struct sockaddr*)interface->ifa_addr;
+			char addrBuf[ INET6_ADDRSTRLEN ];
+
+			if (addr && (addr->sa_family==AF_INET || addr->sa_family==AF_INET6)) {
+				char *name = interface->ifa_name;
+				if (strcmp(name, pref_net) != 0) continue;
+				unsigned short family = 0;
+				if (addr->sa_family == AF_INET) {
+					const struct sockaddr_in *addr4 = (const struct sockaddr_in*)interface->ifa_addr;
+					if (inet_ntop(AF_INET, &addr4->sin_addr, addrBuf, INET_ADDRSTRLEN)) {
+						family = AF_INET;
+						*size_addr = sizeof(struct sockaddr_in);
+					}
+				} else {
+					const struct sockaddr_in6 *addr6 = (const struct sockaddr_in6*)interface->ifa_addr;
+					if (inet_ntop(AF_INET6, &addr6->sin6_addr, addrBuf, INET6_ADDRSTRLEN)) {
+						family = AF_INET6;
+						*size_addr = sizeof(struct sockaddr_in6);
+					}
+				}
+				if (family == pref_family) {
+					*ret_addr = malloc(*size_addr);
+					memcpy(*ret_addr, addr, *size_addr);
+					// char key[256];
+					// sprintf(key, "name:(%s) family:(%d)", name, family);
+					// printf("ZZZZZZZ %s(%s)\n", key, addrBuf);
+					strcpy(ip_str, addrBuf);
+					freeifaddrs(interfaces);
+					return 0;
+				} else {
+					*size_addr = 0;
+				}
+			}
+		}
+		freeifaddrs(interfaces);
+		return -1;
+	}
+	freeifaddrs(interfaces);
+	return -1;
+}
+
+int get_if_addr_old(struct sockaddr **addr, size_t *size_addr, char ip_str[INET6_ADDRSTRLEN]) {
 	if (!addr || !size_addr) {
 		printf("A NULL sockaddr** or size_addr was given to str_to_addr\n");
 		return -1;

@@ -134,21 +134,21 @@ int main() {
 	str_addr_str("facebook.com", "http", AF_INET6, SOCK_DGRAM, 0, w1, w2, w3);
 	printf("main 8 facebook.com %s %s %s\n", w1, w2, w3);
 
-	strcpy(w0, "google.com");
-	ret = str_to_addr(&sa1, w0, "http", AF_INET6, SOCK_STREAM, 0);
-	if (!ret) {
-		unsigned short port;
-		unsigned short family;
-		addr_to_str_short(sa1, w1, &port, &family);
-		printf("addr_to_str_short %s %u %u\n", w1, port, family);
-		free(sa1);
-	}
+	// strcpy(w0, "google.com");
+	// ret = str_to_addr(&sa1, w0, "http", AF_INET6, SOCK_STREAM, 0);
+	// if (!ret) {
+	// 	unsigned short port;
+	// 	unsigned short family;
+	// 	addr_to_str_short(sa1, w1, &port, &family);
+	// 	printf("addr_to_str_short %s %u %u\n", w1, port, family);
+	// 	free(sa1);
+	// }
 
 	printf("\n\n^^^^^^^^^^^ Check get_if_addr ^^^^^^^^^^^\n");
 
 	size_t size_sa1 = 0;
 	char ip_str[INET6_ADDRSTRLEN];
-	get_if_addr(&sa1, &size_sa1, ip_str);
+	get_if_addr(IPV4_WIFI, &sa1, &size_sa1, ip_str);
 	printf("get_if_addr 1 %s %zu\n", ip_str, size_sa1);
 
 	int sock_fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);

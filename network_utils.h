@@ -24,6 +24,13 @@ typedef struct addrinfop {
 	struct addrinfop *next;
 } addrinfop;
 
+typedef enum IF_ADDR_PREFFERED {
+	IPV4_WIFI,
+	IPV6_WIFI,
+	IPV4_CELLULAR,
+	IPV6_CELLULAR,
+} IF_ADDR_PREFFERED;
+
 int str_to_addr(struct sockaddr **addr,
 		const char *addr_str,
 		const char *service,
@@ -50,7 +57,12 @@ int str_addr_str(const char *addr_str,
 			char *port_str,
 			char *family_str);
 
-int get_if_addr(struct sockaddr **addr,
+int get_if_addr(IF_ADDR_PREFFERED iap,
+	struct sockaddr **addr,
+	size_t *size_addr,
+	char ip_str[INET6_ADDRSTRLEN]);
+
+int get_if_addr_old(struct sockaddr **addr,
 		size_t *size_addr,
 		char ip_str[INET6_ADDRSTRLEN]);
 
