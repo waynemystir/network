@@ -148,7 +148,7 @@ int main() {
 
 	size_t size_sa1 = 0;
 	char ip_str[INET6_ADDRSTRLEN];
-	get_if_addr(IPV4_WIFI, &sa1, &size_sa1, ip_str);
+	get_if_addr_old(&sa1, &size_sa1, ip_str);
 	printf("get_if_addr 1 %s %zu\n", ip_str, size_sa1);
 
 	int sock_fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);

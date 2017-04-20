@@ -57,14 +57,16 @@ int str_addr_str(const char *addr_str,
 			char *port_str,
 			char *family_str);
 
-int get_if_addr(IF_ADDR_PREFFERED iap,
+int get_if_addr_iOS_OSX(IF_ADDR_PREFFERED iap,
 	struct sockaddr **addr,
 	size_t *size_addr,
 	char ip_str[INET6_ADDRSTRLEN]);
 
-int get_if_addr_old(struct sockaddr **addr,
+int get_if_addr_Ubuntu(struct sockaddr **addr,
 		size_t *size_addr,
 		char ip_str[INET6_ADDRSTRLEN]);
+
+int get_if_addr_old(struct sockaddr **addr, size_t *size_addr, char ip_str[INET6_ADDRSTRLEN]);
 
 int addr_equals(const struct sockaddr *addr1, const struct sockaddr *addr2);
 

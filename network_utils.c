@@ -126,7 +126,7 @@ int str_addr_str(const char *addr_str,
 	return ret;
 }
 
-int get_if_addr(IF_ADDR_PREFFERED iap,
+int get_if_addr_iOS_OSX(IF_ADDR_PREFFERED iap,
 	struct sockaddr **ret_addr,
 	size_t *size_addr,
 	char ip_str[INET6_ADDRSTRLEN]) {
@@ -204,9 +204,60 @@ int get_if_addr(IF_ADDR_PREFFERED iap,
 				}
 			}
 		}
-		freeifaddrs(interfaces);
+	}
+
+	freeifaddrs(interfaces);
+	return -1;
+}
+
+int ends_with(const char *str, const char *suffix) {
+	if (!str || !suffix)
+		return 0;
+	size_t lenstr = strlen(str);
+	size_t lensuffix = strlen(suffix);
+	if (lensuffix >  lenstr)
+		return 0;
+	return strncmp(str + lenstr - lensuffix, suffix, lensuffix) == 0;
+}
+
+// TODO add tests for this function
+int get_if_addr_Ubuntu(struct sockaddr **ret_addr, size_t *size_addr, char ip_str[INET6_ADDRSTRLEN]) {
+	if (!ret_addr || !size_addr) {
+		printf("A NULL sockaddr** or size_addr was given to str_to_addr\n");
 		return -1;
 	}
+
+	struct ifaddrs *interfaces;
+	if (!getifaddrs(&interfaces)) {
+		// Loop through linked list of interfaces
+		struct ifaddrs *interface;
+		int j = 0;
+		for (interface=interfaces; interface; interface=interface->ifa_next) {
+
+			if (!(interface->ifa_flags & IFF_UP)
+				|| !(interface->ifa_flags & IFF_MULTICAST)
+				|| !(interface->ifa_flags & IFF_RUNNING)
+				|| (interface->ifa_flags & IFF_LOOPBACK)
+				) {
+				continue; // deeply nested code harder to read
+			}
+			// TODO handle IPv6
+			// it's strange that none of the IPv6 addresses are turning up here?
+			*size_addr = sizeof(struct sockaddr_in);
+			struct sockaddr_in *addr = (struct sockaddr_in*)interface->ifa_addr;
+			char addrBuf[ INET6_ADDRSTRLEN ];
+			inet_ntop(AF_INET, &addr->sin_addr, addrBuf, INET_ADDRSTRLEN);
+
+			if (ends_with(addrBuf, "0.0.0")) continue;
+			printf("list (%d)IFF_UP(%d)(%s)(%s)\n", ++j, (interface->ifa_flags & IFF_UP), interface->ifa_name, addrBuf);
+			*ret_addr = malloc(*size_addr);
+			memcpy(*ret_addr, addr, *size_addr);
+			strcpy(ip_str, addrBuf);
+			freeifaddrs(interfaces);
+			return 0;
+		}
+	}
+
 	freeifaddrs(interfaces);
 	return -1;
 }
