@@ -227,6 +227,7 @@ int get_if_addr_iOS_OSX(IF_ADDR_PREFFERED iap,
 	struct sockaddr **ret_addr,
 	size_t *size_addr,
 	char ip_str[INET6_ADDRSTRLEN]) {
+	// just a git push bump
 	if (!ret_addr || !size_addr) {
 		printf("A NULL sockaddr** or size_addr was given to str_to_addr\n");
 		return -1;
