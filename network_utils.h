@@ -48,6 +48,8 @@ int addr_to_str_short(struct sockaddr *addr,
 		unsigned short *port,
 		unsigned short *family);
 
+const char *inet_ntop_v4(in_addr_t *src, char *dst, size_t size);
+
 int str_addr_str(const char *addr_str,
 			const char *service,
 			int family,
