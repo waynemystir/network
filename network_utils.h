@@ -57,6 +57,8 @@ int str_addr_str(const char *addr_str,
 			char *port_str,
 			char *family_str);
 
+int ipv6_available_ios_wifi();
+
 int get_if_addr_iOS_OSX(IF_ADDR_PREFFERED iap,
 	struct sockaddr **addr,
 	size_t *size_addr,
@@ -100,5 +102,7 @@ int get_addrinfops(const char*hostname,
 			struct addrinfop **addrinfops);
 
 void freeaddrinfo_p(struct addrinfop *addrinfops);
+
+char *if_addr_pref_to_str(IF_ADDR_PREFFERED ifap);
 
 #endif /* udp_client_h */

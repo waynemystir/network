@@ -126,6 +126,70 @@ int str_addr_str(const char *addr_str,
 	return ret;
 }
 
+int startswith(char *str, char *w) {
+	size_t sl = strlen(str);
+	size_t wl = strlen(w);
+	if (wl > sl) return 0;
+	for (int i = 0; i < wl; i++) {
+		if (w[i] != str[i]) return 0;
+	}
+	return 1;
+}
+
+int ipv6_available_ios_wifi() {
+
+	// retrieve the current interfaces - returns 0 on success
+	struct ifaddrs *interfaces;
+	if (!getifaddrs(&interfaces)) {
+		// Loop through linked list of interfaces
+		struct ifaddrs *interface;
+		for (interface=interfaces; interface; interface=interface->ifa_next) {
+
+			if (!(interface->ifa_flags & IFF_UP) || (interface->ifa_flags & IFF_LOOPBACK) ) {
+				continue; // deeply nested code harder to read
+			}
+			const struct sockaddr *addr = (const struct sockaddr*)interface->ifa_addr;
+			char addrBuf[ INET6_ADDRSTRLEN ];
+
+			if (addr && (addr->sa_family==AF_INET || addr->sa_family==AF_INET6)) {
+				char *name = interface->ifa_name;
+				if (strcmp(name, "pdp_ip0") != 0) continue;
+
+				unsigned short family = 0;
+				if (addr->sa_family == AF_INET) {
+					const struct sockaddr_in *addr4 = (const struct sockaddr_in*)interface->ifa_addr;
+					if (inet_ntop(AF_INET, &addr4->sin_addr, addrBuf, INET_ADDRSTRLEN)) {
+						family = AF_INET;
+					}
+				} else {
+					const struct sockaddr_in6 *addr6 = (const struct sockaddr_in6*)interface->ifa_addr;
+					if (inet_ntop(AF_INET6, &addr6->sin6_addr, addrBuf, INET6_ADDRSTRLEN)) {
+						family = AF_INET6;
+					}
+				}
+				if (family != AF_INET6) continue;
+				printf("ZZZZZZZZZZZZZZZZZZZ (%s)\n", addrBuf);
+
+				char w[20] = {20};
+				strcpy(w, "fe80");
+				if (startswith(addrBuf, w)) continue;
+				strcpy(w, "fc00");
+				if (startswith(addrBuf, w)) continue;
+				strcpy(w, "fd00");
+				if (startswith(addrBuf, w)) continue;
+				strcpy(w, "ff00");
+				if (startswith(addrBuf, w)) continue;
+
+				freeifaddrs(interfaces);
+				return 1;
+			}
+		}
+	}
+
+	freeifaddrs(interfaces);
+	return 0;
+}
+
 int get_if_addr_iOS_OSX(IF_ADDR_PREFFERED iap,
 	struct sockaddr **ret_addr,
 	size_t *size_addr,
@@ -136,7 +200,7 @@ int get_if_addr_iOS_OSX(IF_ADDR_PREFFERED iap,
 	}
 
 	char pref_net[20];
-	IF_ADDR_PREFFERED pref_family = 0;
+	unsigned int pref_family = 0;
 	switch (iap) {
 		case IPV4_WIFI: {
 			strcpy(pref_net, "en0");
@@ -190,7 +254,19 @@ int get_if_addr_iOS_OSX(IF_ADDR_PREFFERED iap,
 						*size_addr = sizeof(struct sockaddr_in6);
 					}
 				}
+
 				if (family == pref_family) {
+
+					char w[20] = {20};
+					strcpy(w, "fe80");
+					if (startswith(addrBuf, w)) continue;
+					strcpy(w, "fc00");
+					if (startswith(addrBuf, w)) continue;
+					strcpy(w, "fd00");
+					if (startswith(addrBuf, w)) continue;
+					strcpy(w, "ff00");
+					if (startswith(addrBuf, w)) continue;
+
 					*ret_addr = malloc(*size_addr);
 					memcpy(*ret_addr, addr, *size_addr);
 					// char key[256];
@@ -198,7 +274,7 @@ int get_if_addr_iOS_OSX(IF_ADDR_PREFFERED iap,
 					// printf("ZZZZZZZ %s(%s)\n", key, addrBuf);
 					strcpy(ip_str, addrBuf);
 					freeifaddrs(interfaces);
-					return 0;
+					return 1;
 				} else {
 					*size_addr = 0;
 				}
@@ -321,7 +397,7 @@ int addr_equals(const struct sockaddr *addr1, const struct sockaddr *addr2) {
 	} else if( addr1->sa_family == AF_INET6 ) {
 		const struct sockaddr_in6 *a1 = (struct sockaddr_in6 *)addr1;
 		const struct sockaddr_in6 *a2 = (struct sockaddr_in6 *)addr2;
-		return (memcmp( &a1->sin6_addr, &a2->sin6_addr, 16 ) == 0) && (a1->sin6_port == a2->sin6_port);
+		return (memcmp( &a1->sin6_addr, &a2->sin6_addr, sizeof(struct in6_addr)) == 0) && (a1->sin6_port == a2->sin6_port);
 	} else {
 		return 0;
 	}
@@ -491,4 +567,15 @@ void freeaddrinfo_p(struct addrinfop *addrinfop) {
 	if (!addrinfop) return;
 	if (addrinfop->next) freeaddrinfo_p(addrinfop->next);
 	free(addrinfop);
+}
+
+
+
+char *if_addr_pref_to_str(IF_ADDR_PREFFERED ifap) {
+	switch (ifap) {
+		case IPV4_WIFI: return "IPV4_WIFI";
+		case IPV6_WIFI: return "IPV6_WIFI";
+		case IPV4_CELLULAR: return "IPV4_CELLULAR";
+		case IPV6_CELLULAR: return "IPV6_CELLULAR";
+	}
 }
